@@ -37,47 +37,27 @@ def get_process_info():
         - The `process_cpu_cache` global variable is used to store CPU usage 
           data for processes to ensure accurate measurements.
     """
-    global process_cpu_cache
-    current_time = time.time()
+    processes = {p.pid: p for p in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent'])}
     processes_info = []
+
+    for proc in processes.values():
+        proc.cpu_percent(interval=None)
+
+    time.sleep(0.1)
     
-    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+    for proc in processes.values():
         try:
-            proc_info = proc.info
-            pid = proc_info['pid']
-            
-            # calculate CPU percent
-            if pid in process_cpu_cache:
-                cpu_percent = proc.cpu_percent() 
-                time.sleep(0.1)     # delay to ensure measurement
-                cpu_percent = proc.cpu_percent()  # get the actual measurement
-            else:
-                process_cpu_cache[pid] = {
-                    'cpu_percent': proc.cpu_percent(),
-                    'time': current_time
-                }
-                cpu_percent = 0  # Init call
-            
-            mem_percent = proc_info['memory_percent']
-            
             processes_info.append({
-                'pid': pid,
-                'name': proc_info['name'],
-                # Convert to float otherwise thing would not work ???
-                'cpu_percent': round(float(cpu_percent), 1),
-                'memory_percent': round(float(mem_percent), 1)
+                'pid': proc.pid,
+                'name': proc.info['name'],
+                'cpu_percent': round(proc.cpu_percent(interval=None), 1),
+                'memory_percent': round(proc.info['memory_percent'], 1)
             })
-            
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             continue
-    
+
     # Sort
     processes_info.sort(key=lambda x: x['cpu_percent'], reverse=True)
-    
-    # Clean
-    current_pids = set(p['pid'] for p in processes_info)
-    process_cpu_cache = {pid: data for pid, data in process_cpu_cache.items() 
-                        if pid in current_pids}
     
     return processes_info[:10]  # Return top 10 processes
 
