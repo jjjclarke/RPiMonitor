@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>RPi Monitor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h1>RPi Monitor</h1>
+        <div class="grid">
+            <div class="card">
+                <h2>CPU Usage</h2>
+                <div class="meter">
+                    <div class="meter-fill" id="cpu-meter"></div>
+                </div>
+                <p id="cpu-percent"></p>
+                <p id="cpu-temp"></p>
+            </div>
+
+            <div class="card">
+                <h2>Memory Usage</h2>
+                <div class="meter">
+                    <div class="meter-fill" id="memory-meter"></div>
+                </div>
+                <p id="memory-usage"></p>
+            </div>
+
+            <div class="card">
+                <h2>Disk Usage</h2>
+                <div class="meter">
+                    <div class="meter-fill" id="disk-meter"></div>
+                </div>
+                <p id="disk-usage"></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Top Processes</h2>
+            <table class="process-list">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Name</th>
+                        <th>CPU %</th>
+                        <th>Memory %</th>
+                    </tr>
+                </thead>
+                <tbody id="process-list">
+                </tbody>
+            </table>
+        </div>
+
+        <p class="timestamp" id="timestamp"></p>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
