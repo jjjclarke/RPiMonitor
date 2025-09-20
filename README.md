@@ -2,6 +2,8 @@
 
 A Flask-based web app to monitor Raspberry Pi hardware statistics.
 
+This code is no longer being updated as of September 2025.
+
 ## Instructions
 
 1. Clone the GitHub repository
